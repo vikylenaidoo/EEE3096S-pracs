@@ -739,10 +739,11 @@ Clock resolution: 1 ns
 Time: 2.271712 ms
 End Unthreaded Test
 
+---------------------------------------------------------------------------------------------------------------------
 
 Q10. Now let’s optimise using bit widths        TODO: determine accuracy and compare (Im not sure how?)
 --------------------------------------------
-note: precision sizeof == bit size
+note: precision sizeof == word size == bitsize/4
 
 bitwidth: float (already used, see default run)
 
@@ -885,25 +886,136 @@ Serial		: 0000000036f9757c
 
 (c) hardware accelerator flags
 
+flag none specified :see default
+===========================
+
+flag -mfpu=vfpv3
+=================
+
+run#1
+Precision sizeof 4
+Time: 7.298121 ms
+End Unthreaded Test
+
+run#2
+Precision sizeof 4
+End Unthreaded Test
+
+run#3
+Precision sizeof 4
+Time: 7.410255 ms
+End Unthreaded Test
+
+run#4
+Precision sizeof 4
+Time: 7.313173 ms
+End Unthreaded Test
+
+run#5
+Precision sizeof 4
+Time: 7.311662 ms
+End Unthreaded Test
 
 
 
+flag -mfpu=vfpv3-fp16
+=====================
+
+run#1
+Precision sizeof 4
+Time: 7.331859 ms
+End Unthreaded Test
+
+run#2
+Precision sizeof 4
+Time: 7.223891 ms
+End Unthreaded Test
+
+run#3
+Precision sizeof 4
+Time: 7.248318 ms
+End Unthreaded Test
+
+run#4
+Precision sizeof 4
+Time: 7.230349 ms
+End Unthreaded Test
+
+run#5
+Precision sizeof 4
+Time: 7.304672 ms
+End Unthreaded Test
+
+
+flag -mfpu=vfpv4
+=====================
+
+run#1
+Precision sizeof 4
+Time: 7.232434 ms
+
+run#2
+Precision sizeof 4
+Time: 7.154726 ms
+
+run#3
+Precision sizeof 4
+Time: 7.328682 ms
+
+run#4
+Precision sizeof 4
+Time: 7.306755 ms
+
+run#5
+Precision sizeof 4
+Time: 7.304725 ms
+
+
+flag -mfpu=neon-fp-armv8
+=====================
+
+run#1
+Precision sizeof 4
+Time: 7.310975 ms
+
+run#2
+Precision sizeof 4
+Time: 7.290558 ms
+
+run#3
+Precision sizeof 4
+Time: 7.293370 ms
+
+run#4
+Precision sizeof 4
+Time: 7.269048 ms
+
+run#5
+Precision sizeof 4
+Time: 7.336131 ms
 
 
 
+flag -mfpu=nvfpv3xd
+=====================
+
+run#1
+Time: 7.216288 ms
+
+run#2
+Time: 7.157852 ms
+
+run#3
+Time: 7.159779 ms
+
+run#4
+Time: 7.221080 ms
+
+run#5
+Time: 7.152071 ms
 
 
-
-
-
-
-
-
-
-
-
-
-
+TODO: Q12 && Q13
 
 
 
