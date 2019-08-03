@@ -1,0 +1,926 @@
+
+HARDWARE :
+----------------------------------------------------------------------------------
+
+Architecture:        armv7l
+Byte Order:          Little Endian
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per socket:  4
+Socket(s):           1
+Vendor ID:           ARM
+Model:               4
+Model name:          Cortex-A53
+Stepping:            r0p4
+CPU max MHz:         1400.0000
+CPU min MHz:         600.0000
+BogoMIPS:            38.40
+Flags:               half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Q3 //DETERMINING GOLDEN MEASURE (RUN TIME OF PY CODE):  // take average of run#2, 3, 4 
+---------------------------------------------------------------------------------------
+
+RUN#1 //discard this result. use for cleaning cache (cache warming)
+
+using type <class 'float'>
+========================================
+2019-08-03 14:32:32 - Starting log
+========================================
+========================================
+2019-08-03 14:32:41 - End Program
+Elapsed time: 0:00:09.262541
+========================================
+
+
+RUN#2
+
+using type <class 'float'>
+========================================
+2019-08-03 14:33:01 - Starting log
+========================================
+========================================
+2019-08-03 14:33:10 - End Program
+Elapsed time: 0:00:08.951092
+========================================
+
+
+RUN#3
+
+using type <class 'float'>
+========================================
+2019-08-03 14:33:24 - Starting log
+========================================
+========================================
+2019-08-03 14:33:33 - End Program
+Elapsed time: 0:00:08.897787
+========================================
+
+
+RUN#4
+
+using type <class 'float'>
+========================================
+2019-08-03 14:33:45 - Starting log
+========================================
+========================================
+2019-08-03 14:33:54 - End Program
+Elapsed time: 0:00:08.792488
+========================================
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+Q4//RUN C CODE WITHOUT OPTIMISATION: take verage of run#2, 3, 4, 5 
+-----------------------------------------------------------------------
+
+RUN#1 //discard for cleaning cache
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.715791 ms
+End Unthreaded Test
+
+RUN#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.364334 ms
+End Unthreaded Test
+
+RUN#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.360793 ms
+End Unthreaded Test
+
+
+RUN#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.376679 ms
+End Unthreaded Test
+
+RUN#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.200116 ms
+End Unthreaded Test
+
+----------------------------------------------------------------------------------------------------------------------
+
+Q6//Now let’s optimise through using multi-threading.
+--------------------------------------------------------
+(a) run with 1 thread
+
+run#1 //discard
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 11.622 ms
+
+run#2
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 11.5135 ms
+
+
+run#3
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 11.5961 ms
+
+run#4
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 11.6004 ms
+
+run#5
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 11.6276 ms
+
+(b) 2 threads
+
+run#1 //discard
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 6.34028 ms
+
+run#2
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 6.12363 ms
+
+run#3
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 6.198 ms
+
+run#4
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 6.19676 ms
+
+run#5
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 6.01551 ms
+
+
+(c) 4 threads
+
+run#1 //discard
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.28821 ms
+
+run#2
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.7595 ms
+
+run#3
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.83044 ms
+
+run#4
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.62674 ms
+
+run#5
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 4.19293 ms
+
+
+(d) 8 threads
+
+run#1
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.63349 ms
+
+run#2
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.44755 ms
+
+run#3
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 2.98595 ms
+
+run#4
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.57927 ms
+
+run#5
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.72911 ms
+
+(e) 16 threads
+
+run#1
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 2.87632 ms
+
+run#2
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 2.52909 ms
+
+run#3
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 2.97377 ms
+
+run#4
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 3.39403 ms
+
+run#5
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 1.43743 ms
+
+
+(f) 32 threads
+
+run#1
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 2.77316 ms
+
+
+run#2
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 1.87431 ms
+
+run#3
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 1.90915 ms
+
+run#4
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 1.95816 ms
+
+run#5
+bin/Prac2_threaded
+Clock resolution: 1 ns
+Threads created :-)
+All threads have quit
+Time taken for threads to run = 1.82863 ms
+
+----------------------------------------------------------------------------------------------------
+
+Q8//Now let’s optimise through some compiler flags
+--------------------------------------------------
+
+flag -O0
+=========
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.302041 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.213656 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.209073 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.213917 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.321311 ms
+End Unthreaded Test
+
+flag -O1
+===========
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.968082 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 3.090267 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.940426 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.935426 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.950529 ms
+End Unthreaded Test
+
+flag -O2
+============
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.944536 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.947453 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 3.102086 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.949381 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.967557 ms
+End Unthreaded Test
+
+flag -O3
+==========
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.935683 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.930006 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.949537 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.940110 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.952245 ms
+End Unthreaded Test
+
+
+flag -Ofast
+=============
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 3.017736 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.990652 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 3.077893 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.994297 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.959765 ms
+End Unthreaded Test
+
+
+flag -Os
+===============
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.954947 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 3.000937 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 3.175419 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 3.163543 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.939997 ms
+End Unthreaded Test
+
+
+flag -Og
+============
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 5.602635 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 5.543989 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 5.660916 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 5.606957 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 5.613728 ms
+End Unthreaded Test
+
+flag -funroll-loops //note: used with default flag -O0
+========================================================
+
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.195329 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.306788 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.266787 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.307620 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 7.207776 ms
+End Unthreaded Test
+
+
+flag -funroll-loops -Ofast
+========================================================
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.244576 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.218691 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.260982 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.502960 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 4
+Clock resolution: 1 ns
+Time: 2.271712 ms
+End Unthreaded Test
+
+
+Q10. Now let’s optimise using bit widths        TODO: determine accuracy and compare (Im not sure how?)
+--------------------------------------------
+note: precision sizeof == bit size
+
+bitwidth: float (already used, see default run)
+
+
+
+bitwidth: double
+================
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 8
+Clock resolution: 1 ns
+Time: 8.927465 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 8
+Clock resolution: 1 ns
+Time: 8.927412 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 8
+Clock resolution: 1 ns
+Time: 8.849911 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 8
+Clock resolution: 1 ns
+Time: 8.752617 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 8
+Clock resolution: 1 ns
+Time: 8.862826 ms
+End Unthreaded Test
+
+
+bitwidth: __fp16 
+====================
+
+run#1
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 2
+Clock resolution: 1 ns
+Time: 24.382035 ms
+End Unthreaded Test
+
+run#2
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 2
+Clock resolution: 1 ns
+Time: 24.266200 ms
+End Unthreaded Test
+
+run#3
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 2
+Clock resolution: 1 ns
+Time: 24.006199 ms
+End Unthreaded Test
+
+run#4
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 2
+Clock resolution: 1 ns
+Time: 24.260157 ms
+End Unthreaded Test
+
+run#5
+bin/Prac2
+Running Unthreaded Test
+Precision sizeof 2
+Clock resolution: 1 ns
+Time: 24.005728 ms
+End Unthreaded Test
+
+---------------------------------------------------------------------------------
+
+Q11. Now let’s optimise using hardware level support on the Raspberry Pi
+-----------------------------------------------------------------------
+ (a) vikyle-pi@raspberrypi:~/Documents/EEE3096S/NDXVIK005/Prac_2/Prac2/C $ cat /proc/cpuinfo
+processor	: 0
+model name	: ARMv7 Processor rev 4 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+processor	: 1
+model name	: ARMv7 Processor rev 4 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+processor	: 2
+model name	: ARMv7 Processor rev 4 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+processor	: 3
+model name	: ARMv7 Processor rev 4 (v7l)
+BogoMIPS	: 38.40
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x0
+CPU part	: 0xd03
+CPU revision	: 4
+
+Hardware	: BCM2835
+Revision	: a020d3
+Serial		: 0000000036f9757c
+
+(c) hardware accelerator flags
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
