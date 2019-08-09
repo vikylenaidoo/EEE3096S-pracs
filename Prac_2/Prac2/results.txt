@@ -741,9 +741,13 @@ End Unthreaded Test
 
 ---------------------------------------------------------------------------------------------------------------------
 
-Q10. Now let’s optimise using bit widths        TODO: determine accuracy and compare (Im not sure how?)
+Q10. Now let’s optimise using bit widths        TODO: determine accuracy and compare (Im not sure how?) 
 --------------------------------------------
+note:amended run time by changing bitwidth of data in globals.h as well. Please update calculations
 note: precision sizeof == word size == bitsize/4
+float: 32 bit
+double:64 bit
+fp16: 16 bit
 
 bitwidth: float (already used, see default run)
 
@@ -756,7 +760,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 8
 Clock resolution: 1 ns
-Time: 8.927465 ms
+Time: 8.729942 ms
 End Unthreaded Test
 
 run#2
@@ -764,7 +768,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 8
 Clock resolution: 1 ns
-Time: 8.927412 ms
+Time: 8.781763 ms
 End Unthreaded Test
 
 run#3
@@ -772,7 +776,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 8
 Clock resolution: 1 ns
-Time: 8.849911 ms
+Time: 8.755466 ms
 End Unthreaded Test
 
 run#4
@@ -780,7 +784,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 8
 Clock resolution: 1 ns
-Time: 8.752617 ms
+Time: 8.657305 ms
 End Unthreaded Test
 
 run#5
@@ -788,7 +792,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 8
 Clock resolution: 1 ns
-Time: 8.862826 ms
+Time: 8.726935 ms
 End Unthreaded Test
 
 
@@ -800,7 +804,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 2
 Clock resolution: 1 ns
-Time: 24.382035 ms
+Time: 30.244868 ms
 End Unthreaded Test
 
 run#2
@@ -808,7 +812,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 2
 Clock resolution: 1 ns
-Time: 24.266200 ms
+Time: 30.253049 ms
 End Unthreaded Test
 
 run#3
@@ -816,7 +820,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 2
 Clock resolution: 1 ns
-Time: 24.006199 ms
+Time: 30.238055 ms
 End Unthreaded Test
 
 run#4
@@ -824,7 +828,7 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 2
 Clock resolution: 1 ns
-Time: 24.260157 ms
+Time: 30.326702 ms
 End Unthreaded Test
 
 run#5
@@ -832,8 +836,16 @@ bin/Prac2
 Running Unthreaded Test
 Precision sizeof 2
 Clock resolution: 1 ns
-Time: 24.005728 ms
+Time: 30.163907 ms
 End Unthreaded Test
+
+
+Might be useful to explain long run time with fp16:
+
+"The __fp16 data type is not an arithmetic data type. The __fp16 data type is for storage and conversion only. Operations on __fp16 values do not use half-precision arithmetic. The values of __fp16 automatically promote to single-precision float (or double-precision double) floating-point data type when used in arithmetic operations. After the arithmetic operation, these values are automatically converted to the half-precision __fp16 data type for storage. The __fp16 data type is available in both C and C++ source language modes."
+source: http://www.keil.com/support/man/docs/armclang_ref/armclang_ref_sex1519040854421.htm
+
+
 
 ---------------------------------------------------------------------------------
 
@@ -918,7 +930,7 @@ End Unthreaded Test
 
 
 
-flag -mfpu=vfpv3-fp16
+flag -mfpu=vfpv3-fp16 //not useful. If you want to include it let me know and I will re run using biwidth fp16 (this hw flag was run using float)
 =====================
 
 run#1
@@ -1015,20 +1027,70 @@ run#5
 Time: 7.152071 ms
 
 
-TODO: Q12 && Q13
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Q12: Find the best combination of bit-width and compiler flags to give you the best possible speed up over your golden measure implementation.
+------------------------------------------------------------------------------------------------------------------------------------------------
+hw flags: try vfpv3xd , fpv4
+bitwidth: float
+comp flags: try -O3 , -funroll-loops   
+------------------------------------------
+
+flag -O3 -funroll-loops mfpu=vfpv4
+=================================
+run#1
+Time: 2.300913 ms
+
+run#2
+Time: 2.312059 ms
+
+run#3
+Time: 2.255863 ms
+
+run#4
+Time: 2.256227 ms
+
+run#5
+Time: 2.237687 ms
+
+
+flag -O3 -funroll-loops mfpu=vfpv3xd
+=================================
+
+run#1
+Time: 2.277339 ms
+
+run#2
+Time: 2.490147 ms
+
+run#3
+Time: 2.261351 ms
+
+run#4
+Time: 2.275987 ms
+
+run#5
+Time: 2.307861 ms
 
 
 
+flag -O3 -funroll-loops
+=================================
+run#1
+Time: 2.254518 ms
 
+run#2
+Time: 2.269674 ms
 
+run#3
+Time: 2.272799 ms
 
+run#4
+Time: 2.253216 ms
 
-
-
-
-
-
-
+run#5
+Time: 2.389883 ms
 
 
 
