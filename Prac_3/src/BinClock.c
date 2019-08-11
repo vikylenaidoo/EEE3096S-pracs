@@ -20,6 +20,9 @@
 int hours, mins, secs;
 long lastInterruptTime = 0; //Used for button debounce
 int RTC; //Holds the RTC instance
+int ISR_B0; //Holds the ISR B0 instance
+int ISR_B1; //Holds the ISR B1 instance
+
 
 int HH,MM,SS;
 
@@ -35,11 +38,13 @@ void initGPIO(void){
 	RTC = wiringPiI2CSetup(RTCAddr); //Set up the RTC
 	
 	//Set up the LEDS
-	for(int i; i < sizeof(LEDS)/sizeof(LEDS[0]); i++){
+	for(int i=0; i < sizeof(LEDS)/sizeof(LEDS[0]); i++){
 	    pinMode(LEDS[i], OUTPUT);
 	}
 	
 	//Set Up the Seconds LED for PWM
+	pinMode(SECS, OUTPUT);
+
 	//Write your logic here
 	
 	printf("LEDS done\n");
@@ -51,6 +56,8 @@ void initGPIO(void){
 	}
 	
 	//Attach interrupts to Buttons
+	ISR_B0 = wiringPiISR(5, INT_EDGE_FALLING, hourInc);
+	ISR_B1 = wiringPiISR(30, INT_EDGE_FALLING, minInc);
 	//Write your logic here
 	
 	printf("BTNS done\n");
@@ -106,7 +113,12 @@ int hFormat(int hours){
  * Turns on corresponding LED's for hours
  */
 void lightHours(int units){
-	// Write your logic to light up the hour LEDs here	
+	// Write your logic to light up the hour LEDs here
+	
+	for(int i=0; i<(sizeof(LEDS)/sizeof(LEDS[0])); i++){
+		digitalWrite(LEDS[i], 1);
+
+	}	
 }
 
 /*

@@ -15,14 +15,16 @@ void getCurrentTime(void){
 }
 
 int getHours(void){
-    getCurrentTime();
-    return HH;
+  getCurrentTime();
+  return HH;
 }
 
 int getMins(void){
-    return MM;
+  getCurrentTime();
+  return MM;
 }
 
 int getSecs(void){
-    return SS;
+  getCurrentTime;
+  return SS;
 }

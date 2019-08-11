@@ -1093,8 +1093,25 @@ run#5
 Time: 2.389883 ms
 
 
+----------------------------------------------
+flag -O3 -funroll-loops mfpu=vfpv4 , 32 threads
+=========================================
+
+run#1
+Time taken for threads to run = 1.22094 ms
+
+run#2
+Time taken for threads to run = 1.77354 ms
+
+run#3
+Time taken for threads to run = 1.49687 ms
 
 
+run#4
+Time taken for threads to run = 1.23557 ms
+
+run#5
+Time taken for threads to run = 1.30787 ms
 
 
 
