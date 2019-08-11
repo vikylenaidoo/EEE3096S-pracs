@@ -19,7 +19,7 @@ Flags:               half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idi
 
 B. IMPLEMENTATION
 --------------------
-
+signal modulation. modulating a signal using a carrier wave. // maybe copy paste something from Wilkonsons notes
 
 
 C. EXPERIMENTAL PROCEDURE
