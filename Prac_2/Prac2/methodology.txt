@@ -1,0 +1,40 @@
+A. HARDWARE
+----------------------
+
+Architecture:        armv7l
+Byte Order:          Little Endian
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per socket:  4
+Socket(s):           1
+Vendor ID:           ARM
+Model:               4
+Model name:          Cortex-A53
+Stepping:            r0p4
+CPU max MHz:         1400.0000
+CPU min MHz:         600.0000
+BogoMIPS:            38.40
+Flags:               half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32
+
+B. IMPLEMENTATION
+--------------------
+
+
+
+C. EXPERIMENTAL PROCEDURE
+--------------------------
+First the python implementation (Prac2.py) was run multiple times and the average run time was calculated from the recorded values, with the first run being discarded (to clean the cache).
+The average run time of the python code was used as a golden measure, to compare the subsequent experiments to.
+
+Next, the C implementation (Prac2.c) was run without any modifications (unoptimised), and the average run time was hence calculated using the same procedure of discarding the first run.
+
+Next, optimisation was done, with the implementation of multithrreading being the first method of optimisation used. The code (Prac2_threaded.c) was modified to run with 1, 4, 8, 16 and 32 threads, with the results being recorded and their average run times being calculated in the same manner as before.  
+
+Next, optimmisation through compiler flags on the non-threaded code was performed. By editing the makefile to include compiler flags (O0, O1, O2, O3, Ofast, Os, Og, funroll-loops), individually the average of the run time was recorded for later comparison. The flag funroll-loops was used in conjunction with O0 and Ofast .
+
+The next method of optimistaion was done through the modification of bitwidths. 3 data types were compared: float (the default used in previous experiments), double and __fp16. the bitwidth of the data was changed in the globals.h file and the calculations were done using the respective datatype in Prac2.c as well. The run times due to each bitwidth were recorded, and  the averages of each calculated. //note: see comment on line 843 of results.txt  
+
+Next, hardware level optimisation was performed. the following floating point hardware accelerators (vfpv3, vfpv3-16, vfpv4, neon-fparmv8, neon-fp16, vfpv3xd, , vfpv3xd-fp16) were individually applied (by editing the makefile), and their respective runtimes recorded for comparison. 
+
+Finally, a combination of compiler flags, bitwidths and hardware accelerators were used together to find the best possible optimisation. // Note: I never used threading in this part
