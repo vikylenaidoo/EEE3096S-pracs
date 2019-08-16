@@ -292,7 +292,7 @@ void updateTime(){
 	hours =  wiringPiI2CReadReg8(RTC, RTCHOUR);
 } 
 
-int *decToBin(int dec){
+bool *decToBin(int dec){
 	static bool bin[8];
 	//int q = 1;
 	int i=0;
