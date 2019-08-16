@@ -231,7 +231,7 @@ void hourInc(void){
 	//Debounce
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>150){
+	if (interruptTime - lastInterruptTime>100){
 		printf("Interrupt 1 triggered, %x\n", hours);
 		//Fetch RTC Time
 		updateTime();
@@ -261,7 +261,7 @@ void hourInc(void){
 void minInc(void){
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>150){
+	if (interruptTime - lastInterruptTime>100){
 		printf("Interrupt 2 triggered, %x\n", mins);
 		//Fetch RTC Time
 		updateTime();
