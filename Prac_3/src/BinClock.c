@@ -57,7 +57,7 @@ void initGPIO(void){
 	printf("LEDS done\n");
 	
 	//Set up the Buttons
-	for(int j=0; j < (sizeof(BTNS)/sizeof(BTNS[0])); j++){
+	for(int j=0; j < 2; j++){
 		pinMode(BTNS[j], INPUT);
 		pullUpDnControl(BTNS[j], PUD_UP);
 	}
