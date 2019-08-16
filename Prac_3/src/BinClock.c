@@ -311,5 +311,5 @@ bool *decToBin(int dec){
 		}
 	}
 
-	return &bin;
+	return &bin[0];
 }
