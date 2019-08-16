@@ -24,7 +24,7 @@ long lastInterruptTime = 0; //Used for button debounce
 int RTC; //Holds the RTC instance
 int ISR_B0; //Holds the ISR B0 instance
 int ISR_B1; //Holds the ISR B1 instance
-
+char bin[8];
 
 int HH,MM,SS;
 
@@ -125,9 +125,7 @@ int hFormat(int hours){
 void lightHours(int units){
 	// Write your logic to light up the hour LEDs here
 	int h = hexCompensation(units); // convert bcd to decimal number
-
-	char bin[8];
-	*bin = decToBin(hFormat(h));
+	decToBin(hFormat());
 
 	printf("the ouput of lighthours is: %d \n", hFormat(h));
 
@@ -305,8 +303,9 @@ void updateTime(){
 	hours =  wiringPiI2CReadReg8(RTC, RTCHOUR);
 } 
 
-char* decToBin(int dec){
-	static char bin[8];
+//access global variable bin to use
+void decToBin(int dec){
+	//static char bin[8];
 	for(int i=0;i<8;i++){
 		bin[i]=0;
 	}
@@ -319,15 +318,11 @@ char* decToBin(int dec){
 		dec = q;
 		i++;
 		printf("%d\n", rem);
-		if(i==8){
-			printf("8 bits exceeded in decToBin");
-			return &bin[0];
-		}
+		
 		if(q==0){
 			printf("end/n/n");	
 			break;
 		}
 	}
 
-	return &(bin[0]);
 }
