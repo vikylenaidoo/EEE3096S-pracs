@@ -296,4 +296,5 @@ bool *decToBin(int dec){
 		
 
 	}
+	return 0;
 }
