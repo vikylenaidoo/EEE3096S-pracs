@@ -125,12 +125,11 @@ int hFormat(int hours){
 void lightHours(int units){
 	// Write your logic to light up the hour LEDs here
 	int h = hexCompensation(units); // convert bcd to decimal number
-	h = hFormat(h);
-	
-	bool bin[8];
-	*bin = decToBin(h);
 
-	printf("the ouput of lighthours is \n");
+	bool bin[8];
+	*bin = decToBin(hFormat(h));
+
+	printf("the ouput of lighthours is: %d \n", hFormat(h));
 
 	for(int i=0; i<(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
 		digitalWrite(LEDS_HOURS[i], bin[i]);
