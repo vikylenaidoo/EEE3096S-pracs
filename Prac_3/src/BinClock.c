@@ -307,7 +307,7 @@ bool* decToBin(int dec){
 	while(1){
 		int q = (int)(dec/2);
 		int rem = dec%2;//(int)(ceil(dec/2) - q);
-		bin[i] = rem;
+		bin[7-i] = rem;
 		dec = q;
 		i++;
 		if(i==8){
