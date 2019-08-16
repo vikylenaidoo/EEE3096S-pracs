@@ -63,8 +63,8 @@ void initGPIO(void){
 	}
 	
 	//Attach interrupts to Buttons
-	ISR_B0 = wiringPiISR(5, INT_EDGE_FALLING, minInc);
-	ISR_B1 = wiringPiISR(30, INT_EDGE_FALLING, hourInc);
+	wiringPiISR(BTNS[0], INT_EDGE_FALLING, minInc);
+	wiringPiISR(BTNS[1], INT_EDGE_FALLING, hourInc);
 	//Write your logic here
 	
 	printf("BTNS done\n");
@@ -231,7 +231,7 @@ void hourInc(void){
 	//Debounce
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>100){
+	if (interruptTime - lastInterruptTime>200){
 		printf("Interrupt 1 triggered, %x\n", hours);
 		//Fetch RTC Time
 		updateTime();
@@ -261,7 +261,7 @@ void hourInc(void){
 void minInc(void){
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>100){
+	if (interruptTime - lastInterruptTime>200){
 		printf("Interrupt 2 triggered, %x\n", mins);
 		//Fetch RTC Time
 		updateTime();
