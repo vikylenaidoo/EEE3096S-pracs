@@ -15,12 +15,14 @@ void secPWM(int units);
 void hourInc(void);
 void minInc(void);
 void toggleTime(void);
+bool *decToBin();
+void updateTime(void);
 
 // define constants
-const char RTCAddr = 0x6f;
-const char SEC = 0x00; // see register table in datasheet
-const char MIN = 0x01;
-const char HOUR = 0x02;
+const char RTCAddr = 0x6f; //hardware address of slave
+const char RTCSEC = 0x00; // see register table in datasheet
+const char RTCMIN = 0x01;
+const char RTCHOUR = 0x02;
 const char TIMEZONE = 2; // +02H00 (RSA)
 
 // define pins
