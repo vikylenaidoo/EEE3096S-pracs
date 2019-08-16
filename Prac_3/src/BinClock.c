@@ -133,7 +133,7 @@ void lightHours(int units){
 
 	for(int i=0; i<(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
 		digitalWrite(LEDS_HOURS[i], bin[i]);
-		printf("%o\n", bin[i]);	
+		//printf("%o\n", bin[i]);	
 	}
 	
 
@@ -310,6 +310,7 @@ bool* decToBin(int dec){
 		bin[7-i] = rem;
 		dec = q;
 		i++;
+		printf("%d\n", rem);
 		if(i==8){
 			printf("8 bits exceeded in decToBin");
 			return &bin[0];
