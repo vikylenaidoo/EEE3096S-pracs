@@ -40,10 +40,14 @@ void initGPIO(void){
 	RTC = wiringPiI2CSetup(RTCAddr); //Set up the RTC
 	
 	//Set up the LEDS
-	for(int i=0; i < sizeof(LEDS)/sizeof(LEDS[0]); i++){
-	    pinMode(LEDS[i], OUTPUT);
+	for(int i=0; i < sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0]); i++){
+	    pinMode(LEDS_HOURS[i], OUTPUT);
 	}
 	
+	for(int i=0; i < sizeof(LEDS_MINS)/sizeof(LEDS_MINS[0]); i++){
+	    pinMode(LEDS_MINS[i], OUTPUT);
+	}
+
 	//Set Up the Seconds LED for PWM
 	pinMode(SECS, OUTPUT);
 
@@ -77,7 +81,7 @@ int main(void){
 
 	//Set random time (3:04PM)
 	//You can comment this file out later
-	wiringPiI2CWriteReg8(RTC, RTCHOUR, 0x13+TIMEZONE);
+	wiringPiI2CWriteReg8(RTC, RTCHOUR, 0x15+TIMEZONE);
 	wiringPiI2CWriteReg8(RTC, RTCMIN, 0x4);
 	wiringPiI2CWriteReg8(RTC, RTCSEC, 0x80);
 	
@@ -127,8 +131,8 @@ void lightHours(int units){
 
 	printf("the ouput of lighthours is \n");
 
-	for(int i=0; i<(sizeof(LEDS)/sizeof(LEDS[0])); i++){
-		digitalWrite(LEDS[i], bin[i]);
+	for(int i=0; i<(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
+		digitalWrite(LEDS_HOURS[i], bin[i]);
 		printf("%o\n", bin[i]);	
 	}
 	
