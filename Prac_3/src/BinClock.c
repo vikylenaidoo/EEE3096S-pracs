@@ -127,16 +127,16 @@ void lightHours(int units){
 	int h = hexCompensation(units); // convert bcd to decimal number
 	decToBin(hFormat(h));
 
-	printf("the ouput of lighthours is: %d \n", hFormat(h));
+	//printf("the ouput of lighthours is: %d \n", hFormat(h));
 
-	for(int i=0;i<8;i++){
+	/* for(int i=0;i<8;i++){
 		printf("%d\n", bin[i]);
 
-	}
+	}*/
 
 	for(int i=0; i<(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
 		digitalWrite(LEDS_HOURS[i], bin[i]);
-		//printf("%d\n", bin[i]);	
+		printf("%d\n", bin[i]);	
 	}
 	
 
@@ -309,7 +309,7 @@ void decToBin(int dec){
 	for(int i=0;i<8;i++){
 		bin[i]=0;
 	}
-	printf("start conversion\n");
+	//printf("start conversion\n");
 	int i=0;
 	while(1){
 		int q = (int)(dec/2);
@@ -317,10 +317,10 @@ void decToBin(int dec){
 		bin[i] = rem;
 		dec = q;
 		i++;
-		printf("%d\n", rem);
+	//	printf("%d\n", rem);
 		
 		if(q==0){
-			printf("end/n/n");	
+	//		printf("end/n/n");	
 			break;
 		}
 	}
