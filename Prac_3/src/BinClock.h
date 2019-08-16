@@ -15,7 +15,7 @@ void secPWM(int units);
 void hourInc(void);
 void minInc(void);
 void toggleTime(void);
-bool *decToBin();
+char *decToBin();
 void updateTime(void);
 
 // define constants

@@ -126,13 +126,13 @@ void lightHours(int units){
 	// Write your logic to light up the hour LEDs here
 	int h = hexCompensation(units); // convert bcd to decimal number
 
-	bool bin[8];
+	char bin[8];
 	*bin = decToBin(hFormat(h));
 
 	printf("the ouput of lighthours is: %d \n", hFormat(h));
 
 	for(int i=0;i<8;i++){
-		printf("%d", bin[i]);
+		printf("%d\n", bin[i]);
 
 	}
 
@@ -305,12 +305,12 @@ void updateTime(){
 	hours =  wiringPiI2CReadReg8(RTC, RTCHOUR);
 } 
 
-bool* decToBin(int dec){
-	static bool bin[8];
+char* decToBin(int dec){
+	static char bin[8];
 	for(int i=0;i<8;i++){
 		bin[i]=0;
 	}
-	//int q = 1;
+	printf("start conversion\n");
 	int i=0;
 	while(1){
 		int q = (int)(dec/2);
@@ -318,12 +318,13 @@ bool* decToBin(int dec){
 		bin[i] = rem;
 		dec = q;
 		i++;
-		//printf("%d\n", rem);
+		printf("%d\n", rem);
 		if(i==8){
 			printf("8 bits exceeded in decToBin");
 			return &bin[0];
 		}
-		if(q==0){	
+		if(q==0){
+			printf("end/n/n");	
 			break;
 		}
 	}
