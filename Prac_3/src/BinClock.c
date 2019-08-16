@@ -104,7 +104,7 @@ int main(void){
 /*
  * Change the hour format to 12 hours
  */
-int hFormat(int hours){
+int hFormat(int hours){ 
 	/*formats to 12h*/
 	if (hours >= 24){
 		hours = 0;
