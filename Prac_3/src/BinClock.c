@@ -57,7 +57,7 @@ void initGPIO(void){
 	printf("LEDS done\n");
 	
 	//Set up the Buttons
-	for(int j=0; j < sizeof(BTNS)/sizeof(BTNS[0]); j++){
+	for(int j=0; j < (sizeof(BTNS)/sizeof(BTNS[0])); j++){
 		pinMode(BTNS[j], INPUT);
 		pullUpDnControl(BTNS[j], PUD_UP);
 	}
@@ -100,7 +100,7 @@ int main(void){
 		printf("The current time is: %x:%x:%x\n", hours, mins, secs);
 
 		//using a delay to make our program "less CPU hungry"
-		delay(990); //milliseconds
+		delay(500); //milliseconds
 	}
 	return 0;
 }
@@ -231,7 +231,7 @@ void hourInc(void){
 	//Debounce
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>200){
+	if (interruptTime - lastInterruptTime>150){
 		printf("Interrupt 1 triggered, %x\n", hours);
 		//Fetch RTC Time
 		updateTime();
@@ -261,7 +261,7 @@ void hourInc(void){
 void minInc(void){
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>200){
+	if (interruptTime - lastInterruptTime>150){
 		printf("Interrupt 2 triggered, %x\n", mins);
 		//Fetch RTC Time
 		updateTime();
@@ -283,7 +283,7 @@ void minInc(void){
 void toggleTime(void){
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>200){
+	if (interruptTime - lastInterruptTime>150){
 		HH = getHours();
 		MM = getMins();
 		SS = getSecs();
