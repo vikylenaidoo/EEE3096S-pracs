@@ -125,7 +125,8 @@ int hFormat(int hours){
 void lightHours(int units){
 	// Write your logic to light up the hour LEDs here
 	int h = hexCompensation(units); // convert bcd to decimal number
-
+	h = hFormat(h);
+	
 	bool bin[8];
 	*bin = decToBin(h);
 
@@ -313,7 +314,7 @@ bool* decToBin(int dec){
 		bin[7-i] = rem;
 		dec = q;
 		i++;
-		printf("%d\n", rem);
+		//printf("%d\n", rem);
 		if(i==8){
 			printf("8 bits exceeded in decToBin");
 			return &bin[0];
