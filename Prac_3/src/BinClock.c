@@ -57,7 +57,7 @@ void initGPIO(void){
 	printf("LEDS done\n");
 	
 	//Set up the Buttons
-	for(int j; j < sizeof(BTNS)/sizeof(BTNS[0]); j++){
+	for(int j=0; j < sizeof(BTNS)/sizeof(BTNS[0]); j++){
 		pinMode(BTNS[j], INPUT);
 		pullUpDnControl(BTNS[j], PUD_UP);
 	}
@@ -136,7 +136,7 @@ void lightHours(int units){
 
 	for(int i=0; i<(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
 		digitalWrite(LEDS_HOURS[i], bin[i]);
-		printf("%d\n", bin[i]);	
+		//printf("%d\n", bin[i]);	
 	}
 	
 
@@ -147,7 +147,13 @@ void lightHours(int units){
  * Turn on the Minute LEDs
  */
 void lightMins(int units){
+
+	decToBin(hexCompensation(units));
 	//Write your logic to light up the minute LEDs here
+	for(int i=0; i<(sizeof(LEDS_MINS)/sizeof(LEDS_MINS[0])); i++){
+		digitalWrite(LEDS_MINS[i], bin[i]);
+		//printf("%d\n", bin[i]);	
+	}
 }
 
 /*
