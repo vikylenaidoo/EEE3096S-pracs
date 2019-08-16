@@ -129,7 +129,7 @@ void lightHours(int units){
 
 	for(int i=0; i<(sizeof(LEDS)/sizeof(LEDS[0])); i++){
 		digitalWrite(LEDS[i], bin[i]);
-		printf("%d", bin[i]);	
+		printf("%o\n", bin[i]);	
 	}
 	
 
