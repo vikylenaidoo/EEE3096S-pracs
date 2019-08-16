@@ -63,8 +63,8 @@ void initGPIO(void){
 	}
 	
 	//Attach interrupts to Buttons
-	ISR_B0 = wiringPiISR(5, INT_EDGE_FALLING, hourInc);
-	ISR_B1 = wiringPiISR(30, INT_EDGE_FALLING, minInc);
+	ISR_B0 = wiringPiISR(5, INT_EDGE_FALLING, minInc);
+	ISR_B1 = wiringPiISR(30, INT_EDGE_FALLING, hourInc);
 	//Write your logic here
 	
 	printf("BTNS done\n");
