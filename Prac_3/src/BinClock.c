@@ -122,10 +122,10 @@ void lightHours(int units){
 	// Write your logic to light up the hour LEDs here
 	hours = hexCompensation(units); // convert bcd to decimal number
 
-	bool bin[] = decToBin(units);
+	bool *bin[] = decToBin(units);
 
 	for(int i=0; i<(sizeof(LEDS)/sizeof(LEDS[0])); i++){
-		digitalWrite(LEDS[i], bin[i]);
+		digitalWrite(LEDS[i], *bin[i]);
 		
 	}
 
