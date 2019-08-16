@@ -125,7 +125,7 @@ int hFormat(int hours){
 void lightHours(int units){
 	// Write your logic to light up the hour LEDs here
 	int h = hexCompensation(units); // convert bcd to decimal number
-	decToBin(hFormat());
+	decToBin(hFormat(h));
 
 	printf("the ouput of lighthours is: %d \n", hFormat(h));
 
