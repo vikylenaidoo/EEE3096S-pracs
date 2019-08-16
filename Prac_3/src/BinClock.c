@@ -131,9 +131,14 @@ void lightHours(int units){
 
 	printf("the ouput of lighthours is: %d \n", hFormat(h));
 
-	for(int i=0; i<=(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
-		//digitalWrite(LEDS_HOURS[i], bin[i]);
-		printf("%d\n", bin[i]);	
+	for(int i=0;i<8;i++){
+		printf("%d", bin[i]);
+
+	}
+
+	for(int i=0; i<(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
+		digitalWrite(LEDS_HOURS[i], bin[i]);
+		//printf("%d\n", bin[i]);	
 	}
 	
 
@@ -323,5 +328,5 @@ bool* decToBin(int dec){
 		}
 	}
 
-	return &(bin);
+	return &(bin[0]);
 }
