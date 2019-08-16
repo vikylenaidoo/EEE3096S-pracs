@@ -131,8 +131,8 @@ void lightHours(int units){
 
 	printf("the ouput of lighthours is: %d \n", hFormat(h));
 
-	for(int i=0; i<(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
-		digitalWrite(LEDS_HOURS[i], bin[i]);
+	for(int i=0; i<=(sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0])); i++){
+		//digitalWrite(LEDS_HOURS[i], bin[i]);
 		printf("%d\n", bin[i]);	
 	}
 	
