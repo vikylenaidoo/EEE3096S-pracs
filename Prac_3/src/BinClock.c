@@ -293,7 +293,7 @@ void updateTime(){
 } 
 
 char* decToBin(int dec){
-	char bin[8];
+	static char bin[8];
 	//int q = 1;
 	int i=0;
 	while(1){
@@ -304,7 +304,7 @@ char* decToBin(int dec){
 		i++;
 		if(i==8){
 			printf("8 bits exceeded in decToBin");
-			return &bin;
+			return &bin[0];
 		}
 		if(q==0){
 			break;
