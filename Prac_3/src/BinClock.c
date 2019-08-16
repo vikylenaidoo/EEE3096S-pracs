@@ -122,10 +122,11 @@ void lightHours(int units){
 	// Write your logic to light up the hour LEDs here
 	int h = hexCompensation(units); // convert bcd to decimal number
 
-	char *bin[] = decToBin(h);
+	bool bin[8];
+	*bin = decToBin(h);
 
 	for(int i=0; i<(sizeof(LEDS)/sizeof(LEDS[0])); i++){
-		digitalWrite(LEDS[i], *bin[i]);
+		digitalWrite(LEDS[i], bin[i]);
 		
 	}
 
@@ -292,8 +293,8 @@ void updateTime(){
 	hours =  wiringPiI2CReadReg8(RTC, RTCHOUR);
 } 
 
-char* decToBin(int dec){
-	static char bin[8];
+bool* decToBin(int dec){
+	static bool bin[8];
 	//int q = 1;
 	int i=0;
 	while(1){
