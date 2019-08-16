@@ -125,10 +125,13 @@ void lightHours(int units){
 	bool bin[8];
 	*bin = decToBin(h);
 
+	printf("the ouput of lighthours is \n");
+
 	for(int i=0; i<(sizeof(LEDS)/sizeof(LEDS[0])); i++){
 		digitalWrite(LEDS[i], bin[i]);
-		
+		printf("%d", bin[i]);	
 	}
+	
 
 	//hours = decCompensation(hours);	
 }
