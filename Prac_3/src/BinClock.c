@@ -82,7 +82,7 @@ int main(void){
 	//Set random time (3:04PM)
 	//You can comment this file out later
 	wiringPiI2CWriteReg8(RTC, RTCHOUR, 0x15+TIMEZONE);
-	wiringPiI2CWriteReg8(RTC, RTCMIN, 0x4);
+	wiringPiI2CWriteReg8(RTC, RTCMIN, 0x20);
 	wiringPiI2CWriteReg8(RTC, RTCSEC, 0b10000000);
 	
 	// Repeat this until we shut down
@@ -270,7 +270,7 @@ void minInc(void){
 		updateTime();
 		//Increase minutes by 1, ensuring not to overflow
 		if(hexCompensation(mins)<59){
-			mins++;
+			mins = decCompensation(hexCompensation(mins) +1);
 		}
 		else{
 			mins = 0;
@@ -279,7 +279,8 @@ void minInc(void){
 		}
 		//Write minutes back to the RTC
 		wiringPiI2CWriteReg8(RTC, RTCMIN, mins);
-		printf("%x",mins);
+		printf("%x/n",mins);
+		printf("%d/n",hexCompensation(mins));
 	}
 	lastInterruptTime = interruptTime;
 }
