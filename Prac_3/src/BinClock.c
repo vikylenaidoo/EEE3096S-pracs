@@ -98,7 +98,7 @@ int main(void){
 		lightMins(mins);
 
 		// Print out the time we have stored on our RTC
-		printf("The current time is: %d:%d:%d\n", hexCompensation(hours), hexCompensation(mins), (secs));
+		printf("The current time is: %d:%d:%d\n", hexCompensation(hours), hexCompensation(mins), hexCompensation(secs-0x80));
 
 		//using a delay to make our program "less CPU hungry"
 		delay(500); //milliseconds
