@@ -83,7 +83,7 @@ int main(void){
 	//You can comment this file out later
 	wiringPiI2CWriteReg8(RTC, RTCHOUR, 0x15+TIMEZONE);
 	wiringPiI2CWriteReg8(RTC, RTCMIN, 0x4);
-	wiringPiI2CWriteReg8(RTC, RTCSEC, 0x80);
+	wiringPiI2CWriteReg8(RTC, RTCSEC, 0b10000000);
 	
 	// Repeat this until we shut down
 	
@@ -98,12 +98,12 @@ int main(void){
 		lightMins(mins);
 
 		// Print out the time we have stored on our RTC
-		printf("The current time is: %d:%d:%d\n", hexCompensation(hours), hexCompensation(mins), hexCompensation(secs));
+		printf("The current time is: %d:%d:%d\n", hexCompensation(hours), hexCompensation(mins), (secs));
 
 		//using a delay to make our program "less CPU hungry"
 		delay(500); //milliseconds
 	}
-	return cleanupGPIO();
+	return 0;
 	
 	
 }
