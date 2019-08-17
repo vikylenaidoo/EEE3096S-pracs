@@ -274,9 +274,12 @@ void minInc(void){
 		}
 		else{
 			mins = 0;
+			hourInc();
+			wiringPiI2CWriteReg8(RTC, RTCHOUR, hours);
 		}
 		//Write minutes back to the RTC
 		wiringPiI2CWriteReg8(RTC, RTCMIN, mins);
+		printf("%x",mins);
 	}
 	lastInterruptTime = interruptTime;
 }
