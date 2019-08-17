@@ -86,6 +86,7 @@ int main(void){
 	wiringPiI2CWriteReg8(RTC, RTCSEC, 0x80);
 	
 	// Repeat this until we shut down
+	
 	for (;;){
 		//Fetch the time from the RTC
 		//Write your logic here
@@ -97,12 +98,14 @@ int main(void){
 		lightMins(mins);
 
 		// Print out the time we have stored on our RTC
-		printf("The current time is: %x:%x:%x\n", hours, mins, secs);
+		printf("The current time is: %d:%d:%d\n", hexCompensation(hours), hexCompensation(mins), hexCompensation(secs));
 
 		//using a delay to make our program "less CPU hungry"
 		delay(500); //milliseconds
 	}
-	return 0;
+	return cleanupGPIO();
+	
+	
 }
 
 /*
@@ -330,5 +333,22 @@ void decToBin(int dec){
 			break;
 		}
 	}
+
+}
+
+/* cleanup the gpio pins by setting them all back to input with a LOW value*/
+int cleanupGPIO(void){
+	for (int i = 0; i < sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0]); i++){
+		pinMode(LEDS_HOURS[i], INPUT);
+		pullUpDnControl(LEDS_HOURS[i], PUD_DOWN);
+	}
+	for (int i = 0; i < sizeof(LEDS_MINS)/sizeof(LEDS_MINS[0]); i++){
+		pinMode(LEDS_MINS[i], INPUT);
+		pullUpDnControl(LEDS_MINS[i], PUD_DOWN);
+	}
+	pinMode(SECS, INPUT);
+	pullUpDnControl(SECS, PUD_DOWN);
+	
+	return 0;
 
 }
