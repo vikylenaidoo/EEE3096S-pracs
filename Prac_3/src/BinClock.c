@@ -14,6 +14,7 @@
 #include <stdlib.h> // For system functions
 #include <stdbool.h>
 #include <math.h>
+#include <softPwm.h>
 
 #include "BinClock.h"
 #include "CurrentTime.h"
@@ -50,6 +51,7 @@ void initGPIO(void){
 
 	//Set Up the Seconds LED for PWM
 	pinMode(SECS, OUTPUT);
+	softPwmCreate(SECS, 0, 59);
 
 	//Write your logic here
 	
@@ -96,6 +98,7 @@ int main(void){
 		//Write your logic here
 		lightHours(hours);
 		lightMins(mins);
+		secPWM(secs);
 
 		// Print out the time we have stored on our RTC
 		printf("The current time is: %d:%d:%d\n", hexCompensation(hours), hexCompensation(mins), hexCompensation(secs-0x80));
@@ -166,6 +169,7 @@ void lightMins(int units){
  */
 void secPWM(int units){
 	// Write your logic here
+	softPwmWrite(SECS, hexCompensation(secs));
 }
 
 /*
