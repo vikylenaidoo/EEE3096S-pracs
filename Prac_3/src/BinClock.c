@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <softPwm.h>
+#include <signal.h>
 
 #include "BinClock.h"
 #include "CurrentTime.h"
@@ -80,7 +81,7 @@ void initGPIO(void){
  */
 int main(void){
 	initGPIO();
-
+	signal(SIGINT, terminate_handler);
 	//Set random time (3:04PM)
 	//You can comment this file out later
 	wiringPiI2CWriteReg8(RTC, RTCHOUR, 0x15+TIMEZONE);
@@ -169,7 +170,7 @@ void lightMins(int units){
  */
 void secPWM(int units){
 	// Write your logic here
-	softPwmWrite(SECS, hexCompensation(secs));
+	softPwmWrite(SECS, hexCompensation(secs-0b10000000));
 }
 
 /*
@@ -348,7 +349,7 @@ void decToBin(int dec){
 }
 
 /* cleanup the gpio pins by setting them all back to input with a LOW value*/
-int cleanupGPIO(void){
+void cleanupGPIO(void){
 	for (int i = 0; i < sizeof(LEDS_HOURS)/sizeof(LEDS_HOURS[0]); i++){
 		pinMode(LEDS_HOURS[i], INPUT);
 		pullUpDnControl(LEDS_HOURS[i], PUD_DOWN);
@@ -359,7 +360,16 @@ int cleanupGPIO(void){
 	}
 	pinMode(SECS, INPUT);
 	pullUpDnControl(SECS, PUD_DOWN);
-	
-	return 0;
+	printf("exiting gracefully\n");
 
+	exit(0);
+
+}
+
+void terminate_handler(int sig_num){
+	if(sig_num==SIGINT){
+		cleanupGPIO();
+	}
+	printf("error");
+	exit(0);
 }

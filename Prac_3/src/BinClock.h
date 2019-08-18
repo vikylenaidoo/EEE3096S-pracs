@@ -17,7 +17,8 @@ void minInc(void);
 void toggleTime(void);
 void decToBin();
 void updateTime(void);
-int cleanupGPIO(void);
+void cleanupGPIO(void);
+void terminate_handler(int sig_num);
 
 // define constants
 const char RTCAddr = 0x6f; //hardware address of slave
