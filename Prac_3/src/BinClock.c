@@ -60,7 +60,7 @@ void initGPIO(void){
 	printf("LEDS done\n");
 	
 	//Set up the Buttons
-	for(int j=0; j < 2; j++){
+	for(int j=0; j < 3; j++){
 		pinMode(BTNS[j], INPUT);
 		pullUpDnControl(BTNS[j], PUD_UP);
 	}
@@ -68,6 +68,7 @@ void initGPIO(void){
 	//Attach interrupts to Buttons
 	wiringPiISR(BTNS[0], INT_EDGE_FALLING, minInc);
 	wiringPiISR(BTNS[1], INT_EDGE_FALLING, hourInc);
+	wiringPiISR(BTNS[2], INT_EDGE_FALLING, toggleTime);
 	//Write your logic here
 	
 	printf("BTNS done\n");
@@ -298,21 +299,28 @@ void minInc(void){
 void toggleTime(void){
 	long interruptTime = millis();
 
-	if (interruptTime - lastInterruptTime>150){
-		HH = getHours();
-		MM = getMins();
-		SS = getSecs();
+	if (interruptTime - lastInterruptTime>200){
+		//if(toggle){
+			printf("toggle time");
+			HH = getHours();
+			MM = getMins();
+			SS = getSecs();
 
-		HH = hFormat(HH);
-		HH = decCompensation(HH);
-		wiringPiI2CWriteReg8(RTC, RTCHOUR, HH);
+			HH = hFormat(HH);
+			HH = decCompensation(HH);
+			wiringPiI2CWriteReg8(RTC, RTCHOUR, HH);
 
-		MM = decCompensation(MM);
-		wiringPiI2CWriteReg8(RTC, RTCMIN, MM);
+			MM = decCompensation(MM);
+			wiringPiI2CWriteReg8(RTC, RTCMIN, MM);
 
-		SS = decCompensation(SS);
-		wiringPiI2CWriteReg8(RTC, RTCSEC, 0b10000000+SS);
+			SS = decCompensation(SS);
+			wiringPiI2CWriteReg8(RTC, RTCSEC, 0b10000000+SS);
 
+		//	toggle =!toggle;
+		//}
+		//secs = SS;
+		//hours = HH;
+		//mins = MM;
 	}
 	lastInterruptTime = interruptTime;
 }
