@@ -42,6 +42,7 @@ void play_pause_isr(void){
     long interrupt_time = millis();
     if(interrupt_time-last_interrupt_time>200){
         // Write your logic here
+        cout<<"paused"<<endl;
         playing = !playing; 
 
     }
@@ -53,6 +54,7 @@ void stop_isr(void){
     long interrupt_time = millis();
     if(interrupt_time-last_interrupt_time>200){
         // Write your logic here
+        cout<<"stopped"<<endl;
         stopped = true;  
 
     }
@@ -107,14 +109,14 @@ void *playThread(void *threadargs){
             continue;
         }
 
-        if(bufferReading == bufferWriting && (buffer_location==0)){
+       /* if(bufferReading == bufferWriting && (buffer_location==0)){
             cout<< "buffering ......" << endl;
             continue;
 
-        }
+        }*/
         //Write the buffer out to SPI
-        wiringPiSPIDataRW(0, &buffer[bufferReading][buffer_location][0], 16);
-
+        wiringPiSPIDataRW(0, buffer[bufferReading][buffer_location], 2);
+        //cout<<"data sent"<<endl;
 
 
         //Do some maths to check if you need to toggle buffers
@@ -192,31 +194,41 @@ int main(){
         perror("Error while opening the file.\n");
         exit(EXIT_FAILURE);
     }
+    else{
+        cout<<"file opened successfully" << endl;
+
+    }
 
     //set initial control bits
     int counter = 0;
-    char control = 0b00110000;
+    char control = 0b01110000;
     char data_read; //8bits of data
     
 
-    buffer[bufferWriting][counter][0] = control; // first 8 bits
     
-    playThread((void *)1);
+    
+    
+    cout << "test" << endl;
     // Have a loop to read from the file
     bufferWriting = 0;
     
     while((data_read = fgetc(soundfile)) != EOF){
         while(threadReady && (bufferWriting==bufferReading) && (counter==0)){
             //waits in here after it has written to a side, and the thread is still reading from the other side
+            //cout << "waiting" << endl;
             continue;
         }
         //soundfile.read(&data_read, 1); 
         //data_read = fgetc(soundfile);   
-        cout << data_read << endl;
-
-        buffer[bufferWriting][counter][0] |= ((unsigned char)data_read) >> 6;
-        buffer[bufferWriting][counter][1] = ((unsigned char)data_read) << 2;
+        //cout << data_read << endl;
+       // printf("%x \n", data_read);
+        buffer[bufferWriting][counter][0] = control; // first 8 bits
+        buffer[bufferWriting][counter][0] |= (data_read) >> 6;
+        buffer[bufferWriting][counter][1] = (data_read) << 2;
         
+        //printf("%x \n",buffer[bufferWriting][counter][0]);
+        //printf("%x \n\n", buffer[bufferWriting][counter][1]);
+
         counter++;
         if(counter >= BUFFER_SIZE){
             if(!threadReady){
@@ -225,6 +237,7 @@ int main(){
 
             counter = 0;
             bufferWriting = !bufferWriting;
+            //playThread((void *)1);
         }//finsih loading first buffer
     } //end of file
     
