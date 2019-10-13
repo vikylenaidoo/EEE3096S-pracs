@@ -4,6 +4,9 @@
 #include <thread>
 #include <chrono>
 #include <unistd.h>
+#include <iomanip>
+#include <math.h>
+#include <signal.h>
 
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
@@ -21,7 +24,7 @@ using namespace std;
 #define SPI_SPEED 500000
 #define ADC_BASE 100
 
-const int BTNS[] = {26, 27, 28, 29};
+const int BTNS[] = {2, 3, 4, 5}; //{RESET, START_STOP, FREQUENCY, DISMISS_ALARM}
 const int ALARM = 7; //PWM output on this pin
 
 

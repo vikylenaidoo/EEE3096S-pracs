@@ -1,7 +1,8 @@
 /*IMPORTS*/
 
 #include "greenhouse.h"
-#include "RTC.h"
+//#include "RTC.h"
+#include "CurrentTime.c"
 
 /*GLOBAL VARIABLES*/
 //unsigned char *lightData[10];
@@ -35,37 +36,91 @@ int main(void){
     //setup and initilialisation
     wiringPiSetup();
     init_GPIO();
+    //init_RTC();
     thread thread_ADC = init_ADC();
+    signal(SIGINT, terminateHandler);
     
     sleep(1);
+    
+    alarmEnable=1;
+    alarmActive=0;
+    monitorActive=1;
+    int prevSec = rtcTime[0];
     btnHandler_Reset();
-
+   
     while(true){
         while(monitorActive){
-            std::this_thread::sleep_for(std::chrono::milliseconds(displayFrequency*1000)); //monitor frequncy
-            
-            float humidity = calculateVoltage(humidityData, 3.3);
-            //temp: Vout = Tc*Ta + V0 = 10m*Ta+0.5 ==> Ta = (Vout-V0)/Tc
-            float temp = (calculateVoltage(temperatureData, 3.3)-0.5)/10; //TODO: check is correct
-            //calculate DAC voltage
-            float vout = (lightData/1023)*humidity;
 
-            //display readings 
-            cout<<"RTC Time = "<<rtcTime[2]<<":"<<rtcTime[1]<<":"<<rtcTime[0]<<"\t";
-            cout<<"System Time = "<<systemTime[2]<<":"<<systemTime[1]<<":"<<systemTime[0]<<"\t";
 
-            alarmActive = 0; //switch alarm off
-            if(vout<0.65 || vout>2.65){
-                if(alarmEnable){ // 3mins have passed since last alarm
-                    alarmActive = true;
-                    timeOfLastAlarm[0] = rtcTime[0];
-                    timeOfLastAlarm[1] = rtcTime[1];
-                    timeOfLastAlarm[2] = rtcTime[2];
+            updateRealTime();
+            updateSystemTime();            
+            //std::this_thread::sleep_for(std::chrono::milliseconds(displayFrequency*1000)); //monitor frequncy
+            while(1){
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                updateRealTime();
+                updateSystemTime();
+                if(prevSec!=rtcTime[0]){
+                    if((rtcTime[0]%displayFrequency)==0){
+                        
+                        break;
+                    }
+                    
                 }
             }
 
-            updateAlarmOutput();
+            prevSec=rtcTime[0];
 
+
+            float humidity = calculateVoltage(humidityData, 3.3);
+            //temp: Vout = Tc*Ta + V0 = 10m*Ta+0.5 ==> Ta = (Vout-V0)/Tc
+            float temp = (calculateVoltage(temperatureData, 3.3)-0.5)*100; //TODO: check is correct
+            //calculate DAC voltage
+            float vout = (lightData/1023.0)*humidity;
+
+            //display readings 
+            //cout<<setw(2)<<setprecision(3);
+            cout<<"\t"<<setw(2)<<setfill('0')<<rtcTime[2]<<":"<<setw(2)<<setfill('0')<<rtcTime[1]<<":"<<setw(2)<<setfill('0')<<rtcTime[0]<<"\t";
+            cout<<setw(2)<<setfill('0')<<systemTime[2]<<":"<<setw(2)<<setfill('0')<<systemTime[1]<<":"<<setw(2)<<setfill('0')<<systemTime[0]<<"\t";
+            cout<<setprecision(3)<< humidity<<"\t\t";
+            cout<<setprecision(3)<<temp<<"\t\t";
+            cout<<lightData<<"\t";
+            cout<<setprecision(2)<<vout<<"\t";
+
+            
+
+            //alarmActive = 0; //switch alarm off
+            if((vout<0.65 || vout>2.65)){
+                if(alarmEnable){ // 3mins have passed since last alarm
+                    alarmActive = true;
+                    //cout<<"Alarm Active\t";
+                    timeOfLastAlarm[0] = rtcTime[0];
+                    timeOfLastAlarm[1] = rtcTime[1];
+                    timeOfLastAlarm[2] = rtcTime[2];
+                    alarmEnable=0;
+                }
+            }
+            //updateRealTime();
+            
+            if(!alarmEnable){
+                updateRealTime();
+                //total seconds since last alarm
+                int alarmSecs = rtcTime[0] - timeOfLastAlarm[0]; //seconds diference
+                alarmSecs = alarmSecs + 60*(rtcTime[1] - timeOfLastAlarm[1]); //mins
+                alarmSecs = alarmSecs + 3600*(rtcTime[2] - timeOfLastAlarm[2]); //hours
+                //cout<<"alarmsecs"<<alarmSecs<<"\n";
+                //alarmEnable = false;
+                if(alarmSecs>61){ //more than 3mins has passed
+                    alarmEnable = true;
+                    //cout<<"\nalarm enabled\n";
+                }    
+
+            }
+
+            
+            
+            //writeTo_DAC(vout);
+            updateAlarmOutput();
+            cout <<endl;
         }
 
     }
@@ -119,7 +174,7 @@ void init_GPIO(void){
 
 void init_RTC(){
 
-    RTC = wiringPiI2CSetup(RTCAddr); //Set up the RTC
+    //RTC = wiringPiI2CSetup(RTCAddr); //Set up the RTC
     //set initial System time to 00:00:00
     
 
@@ -133,9 +188,9 @@ thread init_ADC(void){
     wiringPiSPISetup(0, 500000);
     mcp3004Setup(ADC_BASE, SPI_CHANNEL_ADC);
     std::thread thread_ADC(readADC2); // run read_ADC() on a new thread
-
+    cout<<"init_ADC done, Thread started\n";
     return thread_ADC;
-    cout<<"init_ADC done\n";
+    
 }
 
 void readADC2(void){
@@ -150,11 +205,19 @@ void readADC2(void){
 }
 
 void writeTo_DAC(float vout){
-    unsigned char outputData[16];
+    unsigned char outputData[2];
     //set control bits
     char control = 0b01110000;
+    
     //convert vout to 10bit binary value
     int data = (int)((vout/3.3)*1023);
+    
+    for(int n=10; n>=0; n--){
+        float n2 = 2^n; 
+        int bit = (int)floor(data/n2);
+        outputData[8+(10-n)];
+
+    }
     
     wiringPiSPIDataRW(SPI_CHANNEL_DAC, outputData, 2);
 }
@@ -163,6 +226,7 @@ void writeTo_DAC(float vout){
  * constantly updates the data arrays based on the adc values
  * updates occur evry 100ms
  */
+
 /*
 void read_ADC(void){
     unsigned char spiData[16]; //to hold data in/out from the spi comm
@@ -228,9 +292,9 @@ void updateDisplayFrequency(void){
 
 /*update the time from the RTC */
 void updateRealTime(){ 
-	rtcTime[0] =  wiringPiI2CReadReg8(RTC, RTCSEC);
-	rtcTime[1] =  wiringPiI2CReadReg8(RTC, RTCMIN);
-	rtcTime[2] =  wiringPiI2CReadReg8(RTC, RTCHOUR);
+	rtcTime[0] =  getSecs();//wiringPiI2CReadReg8(RTC, RTCSEC);
+	rtcTime[1] =  getMins();//wiringPiI2CReadReg8(RTC, RTCMIN);
+	rtcTime[2] =  getHours();//wiringPiI2CReadReg8(RTC, RTCHOUR);
 }
 
 /*update the system time based on the rtcTime and timeOfStart*/
@@ -250,13 +314,36 @@ float calculateVoltage(int data, float reference){
 void updateAlarmOutput(void){
     if(alarmActive){
         digitalWrite(ALARM, HIGH);
+        cout<<"*";
     }
+    else
+    {
+        digitalWrite(ALARM, LOW);
+    }
+    
 }
 
 
 
+/* cleanup the gpio pins by setting them all back to input with a LOW value*/
+void cleanupGPIO(void){
+	
+    pinMode(ALARM, INPUT);
+    pullUpDnControl(ALARM, PUD_DOWN);
 
+	printf("exiting gracefully\n");
 
+	exit(0);
+
+}
+
+void terminateHandler(int sig_num){
+	if(sig_num==SIGINT){
+		cleanupGPIO();
+	}
+	printf("error");
+	exit(0);
+}
 
 
 
@@ -272,13 +359,18 @@ void btnHandler_Reset(void){
     long now = millis();
     
     if(now-lastInterruptTime>200){
+
         updateRealTime();
         timeOfStart[0] = rtcTime[0];
         timeOfStart[1] = rtcTime[1];
         timeOfStart[2] = rtcTime[2];
         updateSystemTime();
+        alarmEnable = 1;
+        alarmActive = 0;
         system("clear");
         cout<<"system reset\n";
+        cout<<"\n\tRTC Time\tSystem Time\tHumidity\tTemporature\tLight\tDAC Out\tAlarm";
+        cout <<endl;
     
     
     
@@ -290,8 +382,17 @@ void btnHandler_StartStop(void){
     long now = millis();
 
     if(now-lastInterruptTime>200){
-        monitorActive = !monitorActive;    
-    
+        monitorActive = !monitorActive;
+    /*
+        if(monitorActive){
+            monitorActive = 0;
+            cout<<"\n*stop*\n";  
+        }
+        else{
+            monitorActive = 1;
+            cout<<"\n*start*\n"; 
+        }
+        */
     }
     lastInterruptTime = now;
     
@@ -303,7 +404,7 @@ void btnHandler_ChangeInterval(void){
     
     if(now-lastInterruptTime>200){
         updateDisplayFrequency();
-        cout<<"\n display frequency changed to: "<< displayFrequency<< " Hz\n"; 
+        cout<<"\n*display frequency changed to every "<< displayFrequency<< "seconds*\n"; 
     
     
     }
@@ -316,6 +417,7 @@ void btnHandler_DismissAlarm(void){
 
     if(now-lastInterruptTime>200){
         alarmActive = false;
+        cout<<"\n*Alarm dismissed*\n\n";
         updateRealTime();
         //total seconds since last alarm
         int alarmSecs = rtcTime[0] - timeOfLastAlarm[0]; //seconds diference
