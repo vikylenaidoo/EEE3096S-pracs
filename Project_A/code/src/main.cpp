@@ -4,6 +4,7 @@
 //#include "RTC.h"
 #include "CurrentTime.c"
 
+
 /*GLOBAL VARIABLES*/
 //unsigned char *lightData[10];
 //unsigned char *temperatureData[10];
@@ -11,10 +12,10 @@
 int lightData, temperatureData, humidityData;
 
                 // {s,m,h}
-int systemTime[] = {0,0,0}; //holds S:M:H of the time the system has been running
+unsigned int systemTime[3];// = {0,0,0}; //holds S:M:H of the time the system has been running
 int rtcTime[3]; //stores the RTC time values after reading. {s,m,h}
-int timeOfStart[3] = {0,0,0};
-int timeOfLastAlarm[3] = {0,0,0};
+unsigned int timeOfStart[3];// = {0,0,0};
+unsigned int timeOfLastAlarm[3] = {0,0,0};
 
 int RTC; //Holds the RTC instance
 
@@ -46,19 +47,34 @@ int main(void){
     alarmActive=0;
     monitorActive=1;
     int prevSec = rtcTime[0];
+    updateRealTime();
     btnHandler_Reset();
+
    
     while(true){
         while(monitorActive){
-
+            float humidity;
+            float temp;
+            float vout;
 
             updateRealTime();
             updateSystemTime();            
             //std::this_thread::sleep_for(std::chrono::milliseconds(displayFrequency*1000)); //monitor frequncy
             while(1){
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                
+                humidity = calculateVoltage(humidityData, 3.3);
+                //temp: Vout = Tc*Ta + V0 = 10m*Ta+0.5 ==> Ta = (Vout-V0)/Tc
+                temp = (calculateVoltage(temperatureData, 3.3)-0.5)*100; //TODO: check is correct
+                //calculate DAC voltage
+                vout = (lightData/1023.0)*humidity;
+                writeTo_DAC(vout);
+
                 updateRealTime();
                 updateSystemTime();
+
+                
+                    
                 if(prevSec!=rtcTime[0]){
                     if((rtcTime[0]%displayFrequency)==0){
                         
@@ -69,13 +85,17 @@ int main(void){
             }
 
             prevSec=rtcTime[0];
+            updateRealTime();
+            updateSystemTime();
 
-
+            /*
             float humidity = calculateVoltage(humidityData, 3.3);
             //temp: Vout = Tc*Ta + V0 = 10m*Ta+0.5 ==> Ta = (Vout-V0)/Tc
             float temp = (calculateVoltage(temperatureData, 3.3)-0.5)*100; //TODO: check is correct
             //calculate DAC voltage
             float vout = (lightData/1023.0)*humidity;
+            */
+
 
             //display readings 
             //cout<<setw(2)<<setprecision(3);
@@ -90,6 +110,7 @@ int main(void){
 
             //alarmActive = 0; //switch alarm off
             if((vout<0.65 || vout>2.65)){
+                
                 if(alarmEnable){ // 3mins have passed since last alarm
                     alarmActive = true;
                     //cout<<"Alarm Active\t";
@@ -109,7 +130,7 @@ int main(void){
                 alarmSecs = alarmSecs + 3600*(rtcTime[2] - timeOfLastAlarm[2]); //hours
                 //cout<<"alarmsecs"<<alarmSecs<<"\n";
                 //alarmEnable = false;
-                if(alarmSecs>61){ //more than 3mins has passed
+                if(alarmSecs>180){ //more than 3mins has passed
                     alarmEnable = true;
                     //cout<<"\nalarm enabled\n";
                 }    
@@ -199,7 +220,7 @@ void readADC2(void){
         temperatureData=analogRead(ADC_BASE+1);
         humidityData=analogRead(ADC_BASE+2);
         
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
     }
 
 }
@@ -210,14 +231,16 @@ void writeTo_DAC(float vout){
     char control = 0b01110000;
     
     //convert vout to 10bit binary value
-    int data = (int)((vout/3.3)*1023);
-    
-    for(int n=10; n>=0; n--){
-        float n2 = 2^n; 
-        int bit = (int)floor(data/n2);
-        outputData[8+(10-n)];
+    uint16_t data = (uint16_t)((vout/3.3)*1023);
+    outputData[0] = control; //fisrt 8 bits
+    outputData[0] |= (data)>>6;
+    outputData[1] = (data)<<2;
 
-    }
+    //cout<<"\ndata="<<data;
+
+    //printf("\n vout = %x ",outputData[0]);
+    //printf("%x \n",outputData[1]);
+    
     
     wiringPiSPIDataRW(SPI_CHANNEL_DAC, outputData, 2);
 }
@@ -299,9 +322,30 @@ void updateRealTime(){
 
 /*update the system time based on the rtcTime and timeOfStart*/
 void updateSystemTime(void){
-    systemTime[0] = rtcTime[0]-timeOfStart[0];
-    systemTime[1] = rtcTime[1]-timeOfStart[1];
-    systemTime[2] = rtcTime[2]-timeOfStart[2];
+    int second1 = rtcTime[0];
+    int minute1 = rtcTime[1];
+    int hour1 = rtcTime[2];
+    int second2 = timeOfStart[0];
+    int minute2 = timeOfStart[1];
+    int hour2 = timeOfStart[2];
+    
+    if(second2 > second1) {
+      minute1--;
+      second1 += 60;
+    }
+   
+   systemTime[0] = second1 - second2;
+   
+   if(minute2 > minute1) {
+      hour1--;
+      minute1 += 60;
+   }
+   systemTime[1] = minute1 - minute2;
+   systemTime[2] = hour1 - hour2;
+
+
+
+
 }
 
 /*since the data from adc is value between 0-1023 we need to calulate voltage
@@ -364,6 +408,9 @@ void btnHandler_Reset(void){
         timeOfStart[0] = rtcTime[0];
         timeOfStart[1] = rtcTime[1];
         timeOfStart[2] = rtcTime[2];
+        systemTime[0] = 0;
+        systemTime[1] = 0;
+        systemTime[2] = 0;
         updateSystemTime();
         alarmEnable = 1;
         alarmActive = 0;
@@ -383,7 +430,7 @@ void btnHandler_StartStop(void){
 
     if(now-lastInterruptTime>200){
         monitorActive = !monitorActive;
-    /*
+        /*
         if(monitorActive){
             monitorActive = 0;
             cout<<"\n*stop*\n";  

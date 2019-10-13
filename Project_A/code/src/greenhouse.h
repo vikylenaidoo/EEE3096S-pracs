@@ -12,6 +12,7 @@
 #include <wiringPiSPI.h>
 #include <wiringPiI2C.h>
 #include <mcp3004.h>
+//#include "BlynkSocket.h"
 
 
 using namespace std;
@@ -59,6 +60,7 @@ void read_ADC(void);
 void updateDisplayFrequency(void);
 float calculateVoltage(int data, float ref);
 void updateAlarmOutput();
+void writeTo_DAC(float vout);
 
 //program end functions
 void cleanupGPIO(void);
