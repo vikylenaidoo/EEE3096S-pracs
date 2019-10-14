@@ -4,12 +4,34 @@
 //#include "RTC.h"
 #include "CurrentTime.c"
 
+//#define BLYNK_DEBUG
+#define BLYNK_PRINT stdout
+#ifdef RASPBERRY
+  #include <BlynkApiWiringPi.h>
+#else
+  #include <BlynkApiLinux.h>
+#endif
+#include <BlynkSocket.h>
+#include <BlynkOptionsParser.h>
+ 
+static BlynkTransportSocket _blynkTransport;
+BlynkSocket Blynk(_blynkTransport);
+ 
+static const char *auth, *serv;
+static uint16_t port;
+ 
+#include <BlynkWidgets.h>
+#define BLYNK_PRINT Serial
+
+
 
 /*GLOBAL VARIABLES*/
 //unsigned char *lightData[10];
 //unsigned char *temperatureData[10];
 //unsigned char *humidityData[10];
 int lightData, temperatureData, humidityData;
+WidgetLED LEDAlarm(V0);
+WidgetTerminal terminal(V4);
 
                 // {s,m,h}
 unsigned int systemTime[3];// = {0,0,0}; //holds S:M:H of the time the system has been running
@@ -32,16 +54,22 @@ int displayFrequency = 1;
 /*MAIN IMPLEMENTATION*/
 /*---------------------------------------------------------------------------------------*/
 
-int main(void){
-
+int main(int argc, char* argv[]){
+    
     //setup and initilialisation
-    wiringPiSetup();
+    wiringPiSetupGpio();
     init_GPIO();
     //init_RTC();
     thread thread_ADC = init_ADC();
     signal(SIGINT, terminateHandler);
-    
-    sleep(1);
+
+    parse_options(argc, argv, auth, serv, port);
+    Blynk.begin(auth, serv, port);
+    //Blynk.connect();
+    //Blynk.connectWiFi(TP-LINK, pass);
+    Blynk.run();
+
+    sleep(5);
     
     alarmEnable=1;
     alarmActive=0;
@@ -52,10 +80,12 @@ int main(void){
 
    
     while(true){
+        cout<<"";
         while(monitorActive){
             float humidity;
             float temp;
             float vout;
+            int light = lightData;
 
             updateRealTime();
             updateSystemTime();            
@@ -83,18 +113,11 @@ int main(void){
                     
                 }
             }
-
+            
+            
             prevSec=rtcTime[0];
             updateRealTime();
             updateSystemTime();
-
-            /*
-            float humidity = calculateVoltage(humidityData, 3.3);
-            //temp: Vout = Tc*Ta + V0 = 10m*Ta+0.5 ==> Ta = (Vout-V0)/Tc
-            float temp = (calculateVoltage(temperatureData, 3.3)-0.5)*100; //TODO: check is correct
-            //calculate DAC voltage
-            float vout = (lightData/1023.0)*humidity;
-            */
 
 
             //display readings 
@@ -103,10 +126,29 @@ int main(void){
             cout<<setw(2)<<setfill('0')<<systemTime[2]<<":"<<setw(2)<<setfill('0')<<systemTime[1]<<":"<<setw(2)<<setfill('0')<<systemTime[0]<<"\t";
             cout<<setprecision(3)<< humidity<<"\t\t";
             cout<<setprecision(3)<<temp<<"\t\t";
-            cout<<lightData<<"\t";
+            cout<<light<<"\t";
             cout<<setprecision(2)<<vout<<"\t";
 
+            Blynk.virtualWrite(V1, humidity);
+            Blynk.virtualWrite(V2, temp);
+            Blynk.virtualWrite(V3, light);
+            Blynk.virtualWrite(V5, vout);
             
+            Blynk.virtualWrite(V4, "RTC Time = ");
+            Blynk.virtualWrite(V4, rtcTime[2]);
+            Blynk.virtualWrite(V4, ":");
+            Blynk.virtualWrite(V4, rtcTime[1]);
+            Blynk.virtualWrite(V4, ":");
+            Blynk.virtualWrite(V4, rtcTime[0]);
+            Blynk.virtualWrite(V4, "\t\t\t\t\t");
+
+            Blynk.virtualWrite(V4, "System Time = ");
+            Blynk.virtualWrite(V4, systemTime[2]);
+            Blynk.virtualWrite(V4, ":");
+            Blynk.virtualWrite(V4, systemTime[1]);
+            Blynk.virtualWrite(V4, ":");
+            Blynk.virtualWrite(V4, systemTime[0]);
+            Blynk.virtualWrite(V4, "\n");
 
             //alarmActive = 0; //switch alarm off
             if((vout<0.65 || vout>2.65)){
@@ -141,6 +183,7 @@ int main(void){
             
             //writeTo_DAC(vout);
             updateAlarmOutput();
+            Blynk.run();
             cout <<endl;
         }
 
@@ -189,6 +232,9 @@ void init_GPIO(void){
     pinMode(ALARM, OUTPUT);
     digitalWrite(ALARM, 0);
 
+
+    LEDAlarm.off();
+    
     cout<< "init_GPIO Done \n\n";
 
 }
@@ -206,7 +252,8 @@ void init_RTC(){
 thread init_ADC(void){
    // wiringPiSPISetup(SPI_CHANNEL, SPI_SPEED);
     
-    wiringPiSPISetup(0, 500000);
+    wiringPiSPISetup(SPI_CHANNEL_ADC, 500000);
+    wiringPiSPISetup(SPI_CHANNEL_DAC, 500000);
     mcp3004Setup(ADC_BASE, SPI_CHANNEL_ADC);
     std::thread thread_ADC(readADC2); // run read_ADC() on a new thread
     cout<<"init_ADC done, Thread started\n";
@@ -356,13 +403,16 @@ float calculateVoltage(int data, float reference){
 }
 
 void updateAlarmOutput(void){
+    //Blynk.run();
     if(alarmActive){
         digitalWrite(ALARM, HIGH);
         cout<<"*";
+        LEDAlarm.on();
     }
     else
     {
         digitalWrite(ALARM, LOW);
+        LEDAlarm.off();
     }
     
 }
@@ -403,6 +453,7 @@ void btnHandler_Reset(void){
     long now = millis();
     
     if(now-lastInterruptTime>200){
+        //sleep(1);
 
         updateRealTime();
         timeOfStart[0] = rtcTime[0];
@@ -415,9 +466,11 @@ void btnHandler_Reset(void){
         alarmEnable = 1;
         alarmActive = 0;
         system("clear");
-        cout<<"system reset\n";
+        cout<<"*system reset*\n";
         cout<<"\n\tRTC Time\tSystem Time\tHumidity\tTemporature\tLight\tDAC Out\tAlarm";
         cout <<endl;
+        Blynk.virtualWrite(V4, "clr");
+        Blynk.virtualWrite(V4, "*system reset*\n");
     
     
     
@@ -430,6 +483,7 @@ void btnHandler_StartStop(void){
 
     if(now-lastInterruptTime>200){
         monitorActive = !monitorActive;
+        //cout<<"\n*monitor = "<<monitorActive<<"*\n";
         /*
         if(monitorActive){
             monitorActive = 0;
@@ -465,6 +519,7 @@ void btnHandler_DismissAlarm(void){
     if(now-lastInterruptTime>200){
         alarmActive = false;
         cout<<"\n*Alarm dismissed*\n\n";
+        Blynk.virtualWrite(V4, "\n*Alarm dismissed*\n");
         updateRealTime();
         //total seconds since last alarm
         int alarmSecs = rtcTime[0] - timeOfLastAlarm[0]; //seconds diference

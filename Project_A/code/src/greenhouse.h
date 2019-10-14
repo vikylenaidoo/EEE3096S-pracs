@@ -25,8 +25,8 @@ using namespace std;
 #define SPI_SPEED 500000
 #define ADC_BASE 100
 
-const int BTNS[] = {2, 3, 4, 5}; //{RESET, START_STOP, FREQUENCY, DISMISS_ALARM}
-const int ALARM = 7; //PWM output on this pin
+const int BTNS[] = {27,22,23,24};//{2, 3, 4, 5}; //{RESET, START_STOP, FREQUENCY, DISMISS_ALARM}
+const int ALARM = 4;//7; //PWM output on this pin
 
 
 
